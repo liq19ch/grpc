@@ -64,3 +64,56 @@ func decodeValidateReq(ctx context.Context, r *http.Request) (interface{}, error
 func encodeRes(ctx context.Context, w http.ResponseWriter, res interface{}) error {
 	return json.NewEncoder(w).Encode(res)
 }
+
+func MakeHashEndpoint(srv Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(hashReq)
+		v, err := srv.Hash(ctx, req.Password)
+		if err != nil {
+			return hashRes{v, err.Error()}, nil
+		}
+		return hashRes{v, ""}, nil
+	}
+}
+
+func MakeValidateEndpoint(srv Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(validateReq)
+		v, err := srv.Validate(ctx, req.Password, req.Hash)
+		if err != nil {
+			return validateRes{false, err.Error()}, nil
+		}
+		return validateRes{v, ""}, nil
+	}
+}
+
+type Endpoints struct {
+	HashEndpoint     endpoint.Endpoint
+	ValidateEndpoint endpoint.Endpoint
+}
+
+func (e Endpoints) Hash(ctx context.Context, password string) (string, error) {
+	req := hashReq{password}
+	resp, err := e.HashEndpoint(ctx, req)
+	if err != nil {
+		return "", err
+	}
+	hashResp := resp.(hashRes)
+	if hashResp.Err != "" {
+		return "", errors.New(hashResp.Err)
+	}
+	return hashResp.Hash, nil
+}
+
+func (e Endpoints) Validate(ctx context.Context, password, hash string) (bool, error) {
+	req := validateReq{password, hash}
+	resp, err := e.ValidateEndpoint(ctx, req)
+	if err != nil {
+		return false, err
+	}
+	validateResp := resp.(validateRes)
+	if validateResp.Err != "" {
+		return false, errors.New(validateResp.Err)
+	}
+	return validateResp.Valid, nil
+}
