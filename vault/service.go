@@ -1,6 +1,13 @@
 package vault
 
-import "context"
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"github.com/go-kit/kit/endpoint"
+	"golang.org/x/crypto/bcrypt"
+	"net/http"
+)
 
 type Service interface {
 	Hash(ctx context.Context, password string) (string, error)
@@ -24,6 +31,11 @@ func (vaultService) Validate(ctx context.Context, password string, hash string) 
 	}
 	return true, nil
 }
+
+func NewService() Service {
+	return vaultService{}
+}
+
 type hashReq struct {
 	Password string `json:"password"`
 }
