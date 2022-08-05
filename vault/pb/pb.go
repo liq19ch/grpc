@@ -4,7 +4,7 @@
 // 	protoc        v3.21.4
 // source: vault.proto
 
-package __
+package pb
 
 import (
 	"context"
@@ -360,5 +360,5 @@ func file_vault_proto_init() {
 
 type VaultServer interface {
 	Hash(context.Context, *HashReq) (*HashRes, error)
-	Validate(ctx context.Context, req *ValidateReq) (*ValidateRes, error)
+	Validate(ctx context.Context, req *ValidateReq)(*ValidateRes, error)
 }
