@@ -1,0 +1,25 @@
+syntax = "proto3";
+package pb;
+option go_package = ".";
+service Vault{
+  rpc Hash(HashReq) returns (HashRes){}
+  rpc Validate(ValidateReq) returns (ValidateRes){}
+}
+message HashReq{
+  // type name = position
+  string password = 1;
+}
+message HashRes{
+  string hash = 1;
+  // there doesn't have an err pack as Go so use string instead
+  string err = 2 ;
+}
+
+message ValidateReq{
+  string password = 1;
+  string hash = 2;
+}
+
+message ValidateRes{
+  bool valid = 1;
+}
