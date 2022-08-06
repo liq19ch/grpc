@@ -4,10 +4,9 @@
 // 	protoc        v3.21.4
 // source: vault.proto
 
-package pb
+package __
 
 import (
-	"context"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -358,7 +357,7 @@ func file_vault_proto_init() {
 	file_vault_proto_depIdxs = nil
 }
 
-type VaultServer interface {
-	Hash(context.Context, *HashReq) (*HashRes, error)
-	Validate(ctx context.Context, req *ValidateReq)(*ValidateRes, error)
-}
+//type VaultServer interface {
+//	Hash(context.Context, *HashReq) (*HashRes, error)
+//	Validate(ctx context.Context, req *ValidateReq) (*ValidateRes, error)
+//}
